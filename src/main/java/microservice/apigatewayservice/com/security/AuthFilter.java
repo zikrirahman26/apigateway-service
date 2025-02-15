@@ -1,4 +1,4 @@
-package microservice.apigatewayservice.com.authentication;
+package microservice.apigatewayservice.com.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -39,7 +39,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
             ServerHttpRequest request = exchange.getRequest();
 
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing Authorization Header");
             }
 
             String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
@@ -55,7 +55,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
 
                 return chain.filter(exchange);
             } catch (Exception e) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Token");
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Token or Expired");
             }
         };
     }
